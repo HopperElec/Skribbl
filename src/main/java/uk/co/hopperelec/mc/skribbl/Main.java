@@ -14,14 +14,13 @@ import java.util.Map;
 public final class Main extends JavaPlugin {
     public static Plugin plugin = null;
     List<String> cmds = new ArrayList<>();
-    static List<List<Player>> party = new ArrayList<>();
-    static List<List<Player>> bans = new ArrayList<>();
-    static Map<Player,List<Player>> invites = new HashMap<>();
+    static List<Player> party = new ArrayList<>();
+    static List<Player> bans = new ArrayList<>();
+    public static List<Player> getParty() {return party;}
+    public static List<Player> getBans() {return bans;}
+    public static Plugin getPlugin() {return plugin;}
     SkribblCommands skribblCmds = new SkribblCommands();
     String op = "HopperElecYT";
-    public static List<List<Player>> getParty() {return party;}
-    public static Map<Player,List<Player>> getInvites() {return invites;}
-    public static Plugin getPlugin() {return plugin;}
 
     @Override
     public void onEnable() {

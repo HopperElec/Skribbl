@@ -6,6 +6,9 @@ public class SkribblCommands {
     String pre = "§4[§cSkribbl§4]§r§7 ";
 
     public boolean command(Player author, String[] args) {
+        if (args[0].equalsIgnoreCase("join")) {
+
+        }
         return true;
     }
 }
