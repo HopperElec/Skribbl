@@ -1,0 +1,12 @@
+name: Skribbl
+version: ${project.version}
+main: uk.co.hopperelec.mc.skribbl.Main
+api-version: 1.14
+prefix: skribbl.io
+authors: [HopperElecYT]
+description: skribbl.io but for Minecraft
+website: https://yt.hopperelec.co.uk
+
+commands:
+    skribbl:
+        description: Core command for skribbl plugin by HopperElecYT
