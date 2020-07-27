@@ -7,20 +7,19 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public final class Main extends JavaPlugin {
-    public static Plugin plugin = null;
     List<String> cmds = new ArrayList<>();
+    public static Plugin plugin = null;
+    static String op = "HopperElecYT";
     static List<Player> party = new ArrayList<>();
     static List<Player> bans = new ArrayList<>();
+    public static String getOp() {return op;}
     public static List<Player> getParty() {return party;}
     public static List<Player> getBans() {return bans;}
     public static Plugin getPlugin() {return plugin;}
     SkribblCommands skribblCmds = new SkribblCommands();
-    String op = "HopperElecYT";
 
     @Override
     public void onEnable() {
