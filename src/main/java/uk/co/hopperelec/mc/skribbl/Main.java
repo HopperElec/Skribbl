@@ -40,11 +40,11 @@ public final class Main extends JavaPlugin {
                 author.sendMessage("§e§l/skribbl help §r§4- §eDisplays this page");
                 if (((Player) author).getDisplayName().equalsIgnoreCase(op)) {
                     author.sendMessage("§e§l/skribbl start §r§4- §eStarts a Skribbl game ("+op+" only!)");
-                    author.sendMessage("§e§l/skribbl kick §r§4- §eStarts a Skribbl game ("+op+" only!)");
-                    author.sendMessage("§e§l/skribbl ban §r§4- §eStarts a Skribbl game ("+op+" only!)");
-                    author.sendMessage("§e§l/skribbl unban §r§4- §eStarts a Skribbl game ("+op+" only!)");}
-                author.sendMessage("§e§l/skribbl join §r§4- §eLists Skribbl party commands");
-                author.sendMessage("§e§l/skribbl leave §r§4- §eLists Skribbl party commands");
+                    author.sendMessage("§e§l/skribbl kick §r§4- §eKicks a player from an ongoing Skribbl game but can rejoin ("+op+" only!)");
+                    author.sendMessage("§e§l/skribbl ban §r§4- §eBans a player from taking part in Skribbl games until server restart ("+op+" only!)");
+                    author.sendMessage("§e§l/skribbl unban §r§4- §eUnbans a player from taking part in Skribbl games in this session ("+op+" only!)");}
+                author.sendMessage("§e§l/skribbl join §r§4- §eJoins the list of players wanting to take part in the next Skribbl game");
+                author.sendMessage("§e§l/skribbl leave §r§4- §eLeaves the list of players wanting to take part in the next Skribbl game");
                 author.sendMessage("§0§l-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-");
             } else {
                 boolean found = false;

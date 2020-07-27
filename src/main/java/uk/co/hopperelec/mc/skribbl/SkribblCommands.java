@@ -7,8 +7,8 @@ public class SkribblCommands {
 
     public boolean command(Player author, String[] args) {
         if (args[0].equalsIgnoreCase("join")) {
-
-        }
+            if (Main.getBans().contains(author)) {
+                author.sendMessage("Sorry, bt");}}
         return true;
     }
 }
