@@ -1,7 +1,6 @@
 package uk.co.hopperelec.mc.skribbl;
 
 import org.bukkit.event.EventHandler;
-import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.event.Listener;
@@ -18,7 +17,7 @@ public class Events implements Listener {
             event.getPlayer().sendMessage(pre+"You're currently banned from joining Skribbl games!");}
         if (Main.getReady()) {
             event.getPlayer().setGameMode(GameMode.SPECTATOR);
-            event.getPlayer().teleport(new Location(Bukkit.getWorld(Main.getWorldname()),4064,160,0));
+            event.getPlayer().teleport(new Location(Main.getWorld(),4064,160,0));
             if (!Main.getBans().contains(event.getPlayer())) {
                 event.getPlayer().sendMessage(pre+"Use §c/skribbl join §7to join the party ready to start!");}}}
 

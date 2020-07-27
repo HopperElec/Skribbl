@@ -1,6 +1,9 @@
 package uk.co.hopperelec.mc.skribbl;
 
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 public class SkribblCommands {
@@ -76,10 +79,50 @@ public class SkribblCommands {
             } else {author.sendMessage(pre+"You don't have permission to use this command!");}
 
         } else if (args[0].equalsIgnoreCase("ready")) {
+            Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getPlugin(), () -> {
+                author.sendMessage(pre+"Building map; this may take a while!");
+                for (int x = 4029; x <= 4096; x++) for (int y = 126; y <= 193; y++) for (int z = -33; z <= 34; z++) {
+                    Main.getWorld().getBlockAt(x,y,z).setType(Material.AIR);}
+                for (int a = 1; a <= 64; a++) for (int b = 1; b <= 64; b++) {
+                    Main.getWorld().getBlockAt(4095,127+a,b-32).setType(Material.WHITE_WOOL);
+                    Main.getWorld().getBlockAt(4030,127+a,b-32).setType(Material.SEA_LANTERN);
+                    Main.getWorld().getBlockAt(4030+a,127,b-32).setType(Material.SEA_LANTERN);
+                    Main.getWorld().getBlockAt(4030+a,192,b-32).setType(Material.WHITE_STAINED_GLASS);
+                    Main.getWorld().getBlockAt(4030+a,127+b,-32).setType(Material.SEA_LANTERN);
+                    Main.getWorld().getBlockAt(4030+a,127+b,33).setType(Material.SEA_LANTERN);
+                    Main.getWorld().getBlockAt(4031,160,b-32).setType(Material.BARRIER);}
+                for (int y = 161; y <= 191; y++) for (int z = -31; z <= 32; z++) {
+                    Main.getWorld().getBlockAt(4032,y,z).setType(Material.BARRIER);}
+                author.sendMessage(pre+"Done!");});
+
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                player.setGameMode(GameMode.SPECTATOR);
+                player.teleport(new Location(Main.getWorld(),4064,160,0));
+                if (Main.getBans().contains(player)) {
+                    player.sendMessage(pre+"A Skribbl game is about to start, but you're currently banned from joining Skribbl games!");
+                } else {
+                    player.sendMessage(pre+"A Skribbl game is about to start! Use §c/skribbl join §7to join the party ready to start!");}}
+            Main.setReady(true);
+            
+        } else if (args[0].equalsIgnoreCase("cancel")) {
+            Main.setReady(false);
+
+            Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getPlugin(), () -> {
+                author.sendMessage(pre+"Removing map; this may take a while!");
+                for (int x = 4029; x <= 4096; x++) for (int y = 126; y <= 193; y++) for (int z = -33; z <= 34; z++) {
+                    Main.getWorld().getBlockAt(x,y,z).setType(Material.AIR);}
+                author.sendMessage(pre+"Done!");});
+
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                player.setGameMode(GameMode.SURVIVAL);
+                player.teleport(new Location(Main.getWorld(),0,Main.getWorld().getHighestBlockYAt(0,0)+1,0));
+                player.sendMessage(pre+"The Skribbl game you were due to join has now been cancelled by the host. Apologies!");}
 
         } else if (args[0].equalsIgnoreCase("start")) {
 
-        }
+        } else if (args[0].equalsIgnoreCase("end")) {
+
+        } else {author.sendMessage("I- I am confused... (contact the developer of this plugin HopperElecYT)");}
 
         return true;
     }
