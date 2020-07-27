@@ -9,13 +9,15 @@ public class SkribblCommands {
     public boolean command(Player author, String[] args) {
 
         if (args[0].equalsIgnoreCase("join")) {
-            if (Main.getBans().contains(author)) {
-                author.sendMessage(pre+"Sorry, but you're banned from joining Skribbl games at the moment. Contact "+Main.getOp()+" if you think this is a mistake!");
-            } else if (Main.getParty().contains(author)) {
-                author.sendMessage(pre+"You're already in the list of people wanting to take part in the next Skribbl game!");
-            } else {
-                Main.getParty().add(author);
-                author.sendMessage(pre+"You've now been added to the list of people wanting to take part in the next Skribbl game!");}
+            if (Main.getReady()) {
+                if (Main.getBans().contains(author)) {
+                    author.sendMessage(pre+"Sorry, but you're banned from joining Skribbl games at the moment. Contact "+Main.getOp()+" if you think this is a mistake!");
+                } else if (Main.getParty().contains(author)) {
+                    author.sendMessage(pre+"You're already in the list of people wanting to take part in the next Skribbl game!");
+                } else {
+                    Main.getParty().add(author);
+                    author.sendMessage(pre+"You've now been added to the list of people wanting to take part in the next Skribbl game!");}
+            } else {author.sendMessage("A game is not ready yet!");}
 
         } else if (args[0].equalsIgnoreCase("leave")) {
             if (Main.getParty().contains(author)) {
@@ -72,6 +74,10 @@ public class SkribblCommands {
                             playerUnbanned.sendMessage(pre+"You've been unbanned from joining Skribbl games!");}}
                 } else {author.sendMessage(pre+"Format: /skribbl unban (player)");}
             } else {author.sendMessage(pre+"You don't have permission to use this command!");}
+
+        } else if (args[0].equalsIgnoreCase("ready")) {
+
+        } else if (args[0].equalsIgnoreCase("start")) {
 
         }
 

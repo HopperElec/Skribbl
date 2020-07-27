@@ -15,12 +15,16 @@ import java.util.List;
 public final class Main extends JavaPlugin {
     List<String> cmds = new ArrayList<>();
     public static Plugin plugin = null;
+    static boolean ready = false;
     static boolean started = false;
+    static Player currentDrawer = null;
     static String op = "HopperElecYT";
     static String worldname = "world";
     static List<Player> party = new ArrayList<>();
     static List<Player> bans = new ArrayList<>();
+    public static boolean getReady() {return ready;}
     public static boolean getStarted() {return started;}
+    public static Player getCurrentDrawer() {return currentDrawer;}
     public static String getOp() {return op;}
     public static String getWorldname() {return worldname;}
     public static List<Player> getParty() {return party;}
@@ -31,7 +35,7 @@ public final class Main extends JavaPlugin {
     @Override
     public void onEnable() {
         getServer().getPluginManager().registerEvents(new Events(), this);
-        cmds.add("start"); cmds.add("kick");cmds.add("ban");cmds.add("unban");cmds.add("join");cmds.add("leave");
+        cmds.add("ready"); cmds.add("start"); cmds.add("kick");cmds.add("ban");cmds.add("unban");cmds.add("join");cmds.add("leave");
 
         World world = Bukkit.getWorld(worldname);
         if (world == null) {
@@ -62,6 +66,7 @@ public final class Main extends JavaPlugin {
                 author.sendMessage("§e§l/skribbl §r§4- §eCore command for HopperElecYT's Skribbl plugin");
                 author.sendMessage("§e§l/skribbl help §r§4- §eDisplays this page");
                 if (((Player) author).getDisplayName().equalsIgnoreCase(op)) {
+                    author.sendMessage("§e§l/skribbl ready §r§4- §ePrepares for a game ("+op+" only!)");
                     author.sendMessage("§e§l/skribbl start §r§4- §eStarts a Skribbl game ("+op+" only!)");
                     author.sendMessage("§e§l/skribbl kick §r§4- §eKicks a player from an ongoing Skribbl game but can rejoin ("+op+" only!)");
                     author.sendMessage("§e§l/skribbl ban §r§4- §eBans a player from taking part in Skribbl games until server restart ("+op+" only!)");
