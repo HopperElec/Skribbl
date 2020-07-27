@@ -14,6 +14,5 @@ public class Events implements Listener {
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
-        // Main.getParty().remove(event.getPlayer());
-    }
+        Main.getParty().remove(event.getPlayer());}
 }
