@@ -40,6 +40,7 @@ public final class Main extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        plugin = this;
         world = Bukkit.getWorld(worldname);
         if (world == null) {
             System.out.println("Cannot find world by name "+worldname+"! Cancelling startup of plugin.");
