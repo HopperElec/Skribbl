@@ -9,17 +9,15 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 public class Events implements Listener {
-    String pre = "§4[§cSkribbl§4]§r§7 ";
-
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         if (Main.getBans().contains(event.getPlayer())) {
-            event.getPlayer().sendMessage(pre+"You're currently banned from joining Skribbl games!");}
+            event.getPlayer().sendMessage(Main.getPre()+"You're currently banned from joining Skribbl games!");}
         if (Main.getReady()) {
             event.getPlayer().setGameMode(GameMode.SPECTATOR);
             event.getPlayer().teleport(new Location(Main.getWorld(),4064,160,0));
             if (!Main.getBans().contains(event.getPlayer())) {
-                event.getPlayer().sendMessage(pre+"Use §c/skribbl join §7to join the party ready to start!");}}}
+                event.getPlayer().sendMessage(Main.getPre()+"Use §c/skribbl join §7to join the party ready to start!");}}}
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {

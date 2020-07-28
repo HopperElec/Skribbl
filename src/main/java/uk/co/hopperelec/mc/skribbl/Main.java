@@ -22,6 +22,7 @@ public final class Main extends JavaPlugin {
     static boolean started = false;
     static Player currentDrawer;
     static String op = "HopperElecYT";
+    static String pre = "§4[§cSkribbl§4]§r§7 ";
     static List<Player> party = new ArrayList<>();
     static List<Player> bans = new ArrayList<>();
     static World world;
@@ -31,12 +32,14 @@ public final class Main extends JavaPlugin {
     public static boolean getStarted() {return started;}
     public static Player getCurrentDrawer() {return currentDrawer;}
     public static String getOp() {return op;}
+    public static String getPre() {return pre;}
     public static List<Player> getParty() {return party;}
     public static List<Player> getBans() {return bans;}
     public static World getWorld() {return world;}
 
     public static void setReady(boolean value) {ready = value;}
     public static void setStarted(boolean value) {started = value;}
+    public static void setCurrentDrawer(Player value) {currentDrawer = value;}
 
     @Override
     public void onEnable() {
@@ -51,9 +54,7 @@ public final class Main extends JavaPlugin {
     }
 
     @Override
-    public void onDisable() {
-        for (int x = 4029; x <= 4096; x++) for (int y = 126; y <= 193; y++) for (int z = -33; z <= 34; z++) {
-            world.getBlockAt(x,y,z).setType(Material.AIR);}}
+    public void onDisable() {Game.mapRemoval();}
 
     @Override
     public boolean onCommand(CommandSender author, Command cmd, String label, String[] args) {
