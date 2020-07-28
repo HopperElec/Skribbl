@@ -1,9 +1,11 @@
 package uk.co.hopperelec.mc.skribbl;
 
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -33,8 +35,13 @@ public class Events implements Listener {
                 loc.setX(event.getFrom().getX());}
             if (event.getTo().getY() >= 192 || event.getTo().getY() <= 128) {
                 loc.setY(event.getFrom().getY());}
-            if (event.getTo().getZ() >= 33 || event.getTo().getZ() <= -32) {
-                loc.setZ(event.getFrom().getZ());}
-        }
-    }
+            if (event.getTo().getZ() >= 34 || event.getTo().getZ() <= -32) {
+                loc.setZ(event.getFrom().getZ());}}}
+
+    @EventHandler
+    public void onPlayerDamage(EntityDamageEvent event) {
+        if (event.getEntity() instanceof Player) {
+            Player player = (Player) event.getEntity();
+            if (Main.getStarted() && Main.getParty().contains(player)) {
+                event.setCancelled(true);}}}
 }

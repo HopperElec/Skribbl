@@ -1,21 +1,22 @@
 package uk.co.hopperelec.mc.skribbl;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.ScoreboardManager;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public final class Main extends JavaPlugin {
     List<String> cmds = new ArrayList<>();
     SkribblCommands skribblCmds = new SkribblCommands();
     String worldname = "world";
+    ScoreboardManager scoreboardManager = Bukkit.getScoreboardManager();
 
     public static Plugin plugin = null;
     static boolean ready = false;
@@ -26,6 +27,10 @@ public final class Main extends JavaPlugin {
     static List<Player> party = new ArrayList<>();
     static List<Player> bans = new ArrayList<>();
     static World world;
+    static Random random = new Random();
+    static String currentWord = null;
+    static Map<Player,Integer> points = new HashMap<>();
+    static Scoreboard scoreboard;
 
     public static Plugin getPlugin() {return plugin;}
     public static boolean getReady() {return ready;}
@@ -36,10 +41,15 @@ public final class Main extends JavaPlugin {
     public static List<Player> getParty() {return party;}
     public static List<Player> getBans() {return bans;}
     public static World getWorld() {return world;}
+    public static Random getRandom() {return random;}
+    public static String getCurrentWord() {return currentWord;}
+    public static Map<Player,Integer> getPoints() {return points;}
+    public static Scoreboard getScoreboard() {return scoreboard;}
 
     public static void setReady(boolean value) {ready = value;}
     public static void setStarted(boolean value) {started = value;}
     public static void setCurrentDrawer(Player value) {currentDrawer = value;}
+    public static void setCurrentWord(String value) {currentWord = value;}
 
     @Override
     public void onEnable() {
@@ -48,6 +58,11 @@ public final class Main extends JavaPlugin {
         if (world == null) {
             System.out.println("Cannot find world by name "+worldname+"! Cancelling startup of plugin.");
             this.setEnabled(false);}
+
+        if (scoreboardManager == null) {
+            System.out.println("Bukkit scoreboard manager failed! Cancelling startup of plugin.");
+            this.setEnabled(false);}
+        scoreboard = scoreboardManager.getNewScoreboard();
 
         cmds.add("ready");cmds.add("cancel");cmds.add("start");cmds.add("end");cmds.add("kick");cmds.add("ban");cmds.add("unban");cmds.add("join");cmds.add("leave");
         getServer().getPluginManager().registerEvents(new Events(), this);

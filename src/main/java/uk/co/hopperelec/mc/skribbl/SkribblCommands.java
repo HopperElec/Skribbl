@@ -19,6 +19,7 @@ public class SkribblCommands {
                     author.sendMessage(Main.getPre()+"You're already in the list of people wanting to take part in the next Skribbl game!");
                 } else {
                     Main.getParty().add(author);
+                    Main.getPoints().put(author,0);
                     for (Player player : Main.getParty()) {
                         player.sendMessage(Main.getPre()+author.getDisplayName()+" has joined the game!");}
                     author.sendMessage(Main.getPre()+"You've now been added to the list of people wanting to take part in the next Skribbl game!");}
@@ -117,7 +118,9 @@ public class SkribblCommands {
                         } else {
                             player.sendMessage(Main.getPre()+"A Skribbl game is about to start! Use §c/skribbl join §7to join the party ready to start!");}}
                     Main.setReady(true);
-                } else {author.sendMessage("It is already ready!");}
+                    Main.getParty().add(author);
+                    Main.getPoints().put(author,0);
+                } else {author.sendMessage(Main.getPre()+"The game is already ready!");}
             } else {author.sendMessage(Main.getPre()+"You don't have permission to use this command!");}
             
         } else if (args[0].equalsIgnoreCase("cancel")) {
@@ -140,6 +143,10 @@ public class SkribblCommands {
                         if (!Main.getStarted()) {
                             Main.setReady(false);
                             Main.setStarted(true);
+                            for (Player player : Main.getParty()) {
+                                player.teleport(new Location(Main.getWorld(),4031,161,0));
+                                player.setGameMode(GameMode.ADVENTURE);}
+                            Game.nextDrawer();
                         } else {author.sendMessage(Main.getPre()+"The game is already started!");}
                     } else {author.sendMessage(Main.getPre()+"There must be at least 2 people in the party to start a game!");}
                 } else {author.sendMessage(Main.getPre()+"The game isn't ready yet!");}
