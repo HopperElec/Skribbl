@@ -24,7 +24,7 @@ public class SkribblCommands {
                     for (Player player : Main.getParty()) {
                         player.sendMessage(pre+author.getDisplayName()+" has joined the game!");}
                     author.sendMessage(pre+"You've now been added to the list of people wanting to take part in the next Skribbl game!");}
-            } else {author.sendMessage("A game is not ready yet!");}
+            } else {author.sendMessage(pre+"A game is not ready yet!");}
 
         } else if (args[0].equalsIgnoreCase("leave")) {
             if (Main.getParty().contains(author)) {
@@ -94,52 +94,61 @@ public class SkribblCommands {
 
         } else if (args[0].equalsIgnoreCase("ready")) {
             if (author.getDisplayName().equalsIgnoreCase(Main.getOp())) {
-                Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getPlugin(), () -> {
-                    author.sendMessage(pre+"Building map; this may take a while!");
-                    for (int x = 4029; x <= 4096; x++) for (int y = 126; y <= 193; y++) for (int z = -33; z <= 34; z++) {
-                        Main.getWorld().getBlockAt(x,y,z).setType(Material.AIR);}
-                    for (int a = 1; a <= 64; a++) for (int b = 1; b <= 64; b++) {
-                        Main.getWorld().getBlockAt(4095,127+a,b-32).setType(Material.SEA_LANTERN);
-                        Main.getWorld().getBlockAt(4095,127+a,b-32).setType(Material.WHITE_WOOL);
-                        Main.getWorld().getBlockAt(4030,127+a,b-32).setType(Material.SEA_LANTERN);
-                        Main.getWorld().getBlockAt(4030+a,127,b-32).setType(Material.SEA_LANTERN);
-                        Main.getWorld().getBlockAt(4030+a,192,b-32).setType(Material.WHITE_STAINED_GLASS);
-                        Main.getWorld().getBlockAt(4030+a,127+b,-32).setType(Material.SEA_LANTERN);
-                        Main.getWorld().getBlockAt(4030+a,127+b,33).setType(Material.SEA_LANTERN);
-                        Main.getWorld().getBlockAt(4031,160,b-32).setType(Material.BARRIER);}
-                    for (int y = 161; y <= 191; y++) for (int z = -31; z <= 32; z++) {
-                        Main.getWorld().getBlockAt(4032,y,z).setType(Material.BARRIER);}
-                    author.sendMessage(pre+"Done!");});
-                for (Player player : Bukkit.getOnlinePlayers()) {
-                    player.setGameMode(GameMode.SPECTATOR);
-                    player.teleport(new Location(Main.getWorld(),4064,160,0));
-                    if (Main.getBans().contains(player)) {
-                        player.sendMessage(pre+"A Skribbl game is about to start, but you're currently banned from joining Skribbl games!");
-                    } else {
-                        player.sendMessage(pre+"A Skribbl game is about to start! Use §c/skribbl join §7to join the party ready to start!");}}
-                Main.setReady(true);
+                if (!Main.getReady()) {
+                    Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getPlugin(), () -> {
+                        author.sendMessage(pre+"Building map; this may take a while!");
+                        for (int x = 4029; x <= 4096; x++) for (int y = 126; y <= 193; y++) for (int z = -33; z <= 34; z++) {
+                            Main.getWorld().getBlockAt(x,y,z).setType(Material.AIR);}
+                        for (int a = 1; a <= 64; a++) for (int b = 1; b <= 64; b++) {
+                            Main.getWorld().getBlockAt(4095,127+a,b-32).setType(Material.SEA_LANTERN);
+                            Main.getWorld().getBlockAt(4095,127+a,b-32).setType(Material.WHITE_WOOL);
+                            Main.getWorld().getBlockAt(4030,127+a,b-32).setType(Material.SEA_LANTERN);
+                            Main.getWorld().getBlockAt(4030+a,127,b-32).setType(Material.SEA_LANTERN);
+                            Main.getWorld().getBlockAt(4030+a,192,b-32).setType(Material.WHITE_STAINED_GLASS);
+                            Main.getWorld().getBlockAt(4030+a,127+b,-32).setType(Material.SEA_LANTERN);
+                            Main.getWorld().getBlockAt(4030+a,127+b,33).setType(Material.SEA_LANTERN);
+                            Main.getWorld().getBlockAt(4031,160,b-32).setType(Material.BARRIER);}
+                        for (int y = 161; y <= 191; y++) for (int z = -31; z <= 32; z++) {
+                            Main.getWorld().getBlockAt(4032,y,z).setType(Material.BARRIER);}
+                        author.sendMessage(pre+"Done!");});
+                    for (Player player : Bukkit.getOnlinePlayers()) {
+                        player.setGameMode(GameMode.SPECTATOR);
+                        player.teleport(new Location(Main.getWorld(),4064,160,0));
+                        if (Main.getBans().contains(player)) {
+                            player.sendMessage(pre+"A Skribbl game is about to start, but you're currently banned from joining Skribbl games!");
+                        } else {
+                            player.sendMessage(pre+"A Skribbl game is about to start! Use §c/skribbl join §7to join the party ready to start!");}}
+                    Main.setReady(true);
+                }
             } else {author.sendMessage(pre+"You don't have permission to use this command!");}
             
         } else if (args[0].equalsIgnoreCase("cancel")) {
             if (author.getDisplayName().equalsIgnoreCase(Main.getOp())) {
-                Main.setReady(false);
-                Main.getParty().clear();
-                for (Player player : Bukkit.getOnlinePlayers()) {
-                    player.setGameMode(GameMode.SURVIVAL);
-                    player.teleport(new Location(Main.getWorld(),0,Main.getWorld().getHighestBlockYAt(0,0)+1,0));
-                    player.sendMessage(pre+"The Skribbl game you were due to join has now been cancelled by the host. Apologies!");}
-                Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getPlugin(), () -> {
-                    author.sendMessage(pre+"Removing map; this may take a while!");
-                    for (int x = 4029; x <= 4096; x++) for (int y = 126; y <= 193; y++) for (int z = -33; z <= 34; z++) {
-                        Main.getWorld().getBlockAt(x,y,z).setType(Material.AIR);}
-                    author.sendMessage(pre+"Done!");});
+                if (Main.getReady()) {
+                    Main.setReady(false);
+                    Main.getParty().clear();
+                    for (Player player : Bukkit.getOnlinePlayers()) {
+                        player.setGameMode(GameMode.SURVIVAL);
+                        player.teleport(new Location(Main.getWorld(),0,Main.getWorld().getHighestBlockYAt(0,0)+1,0));
+                        player.sendMessage(pre+"The Skribbl game you were due to join has now been cancelled by the host. Apologies!");}
+                    Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getPlugin(), () -> {
+                        author.sendMessage(pre+"Removing map; this may take a while!");
+                        for (int x = 4029; x <= 4096; x++) for (int y = 126; y <= 193; y++) for (int z = -33; z <= 34; z++) {
+                            Main.getWorld().getBlockAt(x,y,z).setType(Material.AIR);}
+                        author.sendMessage(pre+"Done!");});
+                } else {author.sendMessage(pre+"The game isn't planned yet and so can't be cancelled!");}
             } else {author.sendMessage(pre+"You don't have permission to use this command!");}
 
         } else if (args[0].equalsIgnoreCase("start")) {
+            if (author.getDisplayName().equalsIgnoreCase(Main.getOp())) {
+                if (Main.getReady()) {
+
+                } else {author.sendMessage(pre+"The game isn't ready yet!");}
+            } else {author.sendMessage(pre+"You don't have permission to use this command!");}
 
         } else if (args[0].equalsIgnoreCase("end")) {
 
-        } else {author.sendMessage("I- I am confused... (contact the developer of this plugin HopperElecYT)");}
+        } else {author.sendMessage(pre+"I- I am confused... (contact the developer of this plugin HopperElecYT)");}
 
         return true;
     }
