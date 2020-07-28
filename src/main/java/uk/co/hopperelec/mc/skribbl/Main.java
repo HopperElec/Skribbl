@@ -20,7 +20,7 @@ public final class Main extends JavaPlugin {
     public static Plugin plugin = null;
     static boolean ready = false;
     static boolean started = false;
-    static Player currentDrawer = null;
+    static Player currentDrawer;
     static String op = "HopperElecYT";
     static List<Player> party = new ArrayList<>();
     static List<Player> bans = new ArrayList<>();
