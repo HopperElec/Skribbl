@@ -32,8 +32,8 @@ public class SkribblCommands {
                 for (Player player : Main.getParty()) {
                     player.sendMessage(pre+author.getDisplayName()+" has left the game!");}
                 author.sendMessage(pre+"You've now been removed from the list of people wanting to take part in the next Skribbl game!");
-            } else {
-                author.sendMessage(pre+"You aren't even in the list of people wanting to take part in the next Skribbl game, yet!");}
+                if (Main.getStarted()) {Game.playerLeave(author);}
+            } else {author.sendMessage(pre+"You aren't even in the list of people wanting to take part in the next Skribbl game, yet!");}
 
         } else if (args[0].equalsIgnoreCase("kick")) {
             if (author.getDisplayName().equalsIgnoreCase(Main.getOp())) {
@@ -47,8 +47,9 @@ public class SkribblCommands {
                     } else {
                         Main.getParty().remove(playerToKick);
                         for (Player player : Main.getParty()) {
-                            player.sendMessage(pre+author.getDisplayName()+" has been kicked from the game!");}
-                        author.sendMessage(pre+"The player has now been removed from the current game, but they may rejoin!");}
+                            player.sendMessage(pre+playerToKick.getDisplayName()+" has been kicked from the game!");}
+                        author.sendMessage(pre+"The player has now been removed from the current game, but they may rejoin!");
+                        Game.playerLeave(playerToKick);}
                 } else {author.sendMessage(pre+"Format: /skribbl kick (player)");}
             } else {author.sendMessage(pre+"You don't have permission to use this command!");}
 
@@ -68,8 +69,8 @@ public class SkribblCommands {
                             for (Player player : Main.getParty()) {
                                 player.sendMessage(pre+playerToBan.getDisplayName()+" has been kicked from the game and banned from joining future ones!");}
                             author.sendMessage(pre+"The player has now been removed from the current game and banned!");
-                        } else {
-                            author.sendMessage(pre+"The player has not been removed from the current game as they weren't in it but have been banned from future ones!");}}
+                            Game.playerLeave(playerToBan);
+                        } else {author.sendMessage(pre+"The player has not been removed from the current game as they weren't in it but have been banned from future ones!");}}
                 } else {author.sendMessage(pre+"Format: /skribbl ban (player)");}
             } else {author.sendMessage(pre+"You don't have permission to use this command!");}
 
@@ -142,7 +143,9 @@ public class SkribblCommands {
         } else if (args[0].equalsIgnoreCase("start")) {
             if (author.getDisplayName().equalsIgnoreCase(Main.getOp())) {
                 if (Main.getReady()) {
+                    if (Main.getParty().size() >= 2) {
 
+                    } else {author.sendMessage(pre+"There must be at least 2 people in the party to start a game!");}
                 } else {author.sendMessage(pre+"The game isn't ready yet!");}
             } else {author.sendMessage(pre+"You don't have permission to use this command!");}
 

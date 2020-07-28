@@ -23,7 +23,8 @@ public class Events implements Listener {
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
-        Main.getParty().remove(event.getPlayer());}
+        Main.getParty().remove(event.getPlayer());
+        if (Main.getStarted()) {Game.playerLeave(event.getPlayer());}}
 
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
