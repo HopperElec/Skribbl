@@ -7,49 +7,55 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scoreboard.Scoreboard;
-import org.bukkit.scoreboard.ScoreboardManager;
+//import org.bukkit.scoreboard.*;
 
 import java.util.*;
 
 public final class Main extends JavaPlugin {
     List<String> cmds = new ArrayList<>();
-    SkribblCommands skribblCmds = new SkribblCommands();
-    String worldname = "world";
-    ScoreboardManager scoreboardManager = Bukkit.getScoreboardManager();
+    SkribblCommands skribblCmds = new SkribblCommands(this);
+//    ScoreboardManager scoreboardManager = Bukkit.getScoreboardManager();
+    final String worldname = "world";
+    final String op = "HopperElecYT";
+    final String pre = "§4[§cSkribbl§4]§r§7 ";
+    final Random random = new Random();
+    public Plugin plugin = null;
+    boolean ready = false;
+    boolean started = false;
+    Game game = new Game(this);
+    Player currentDrawer;
+    List<Player> party = new ArrayList<>();
+    List<Player> bans = new ArrayList<>();
+    World world;
+    String currentWord = null;
+    List<Player> correctGuessers = new ArrayList<>();
+    Map<Player,Integer> points = new HashMap<>();
+//    Scoreboard scoreboard;
+//    Objective objective;
+//    Team team;
 
-    public static Plugin plugin = null;
-    static boolean ready = false;
-    static boolean started = false;
-    static Player currentDrawer;
-    static String op = "HopperElecYT";
-    static String pre = "§4[§cSkribbl§4]§r§7 ";
-    static List<Player> party = new ArrayList<>();
-    static List<Player> bans = new ArrayList<>();
-    static World world;
-    static Random random = new Random();
-    static String currentWord = null;
-    static Map<Player,Integer> points = new HashMap<>();
-    static Scoreboard scoreboard;
+    public Plugin getPlugin() {return plugin;}
+    public boolean getReady() {return ready;}
+    public boolean getStarted() {return started;}
+    public Game getGame() {return game;}
+    public Player getCurrentDrawer() {return currentDrawer;}
+    public String getOp() {return op;}
+    public String getPre() {return pre;}
+    public List<Player> getParty() {return party;}
+    public List<Player> getBans() {return bans;}
+    public World getWorld() {return world;}
+    public Random getRandom() {return random;}
+    public String getCurrentWord() {return currentWord;}
+    public List<Player> getCorrectGuessers() {return correctGuessers;}
+    public Map<Player,Integer> getPoints() {return points;}
+//    public Scoreboard getScoreboard() {return scoreboard;}
+//    public Objective getObjective() {return objective;}
+//    public Team getTeam() {return team;}
 
-    public static Plugin getPlugin() {return plugin;}
-    public static boolean getReady() {return ready;}
-    public static boolean getStarted() {return started;}
-    public static Player getCurrentDrawer() {return currentDrawer;}
-    public static String getOp() {return op;}
-    public static String getPre() {return pre;}
-    public static List<Player> getParty() {return party;}
-    public static List<Player> getBans() {return bans;}
-    public static World getWorld() {return world;}
-    public static Random getRandom() {return random;}
-    public static String getCurrentWord() {return currentWord;}
-    public static Map<Player,Integer> getPoints() {return points;}
-    public static Scoreboard getScoreboard() {return scoreboard;}
-
-    public static void setReady(boolean value) {ready = value;}
-    public static void setStarted(boolean value) {started = value;}
-    public static void setCurrentDrawer(Player value) {currentDrawer = value;}
-    public static void setCurrentWord(String value) {currentWord = value;}
+    public void setReady(boolean value) {ready = value;}
+    public void setStarted(boolean value) {started = value;}
+    public void setCurrentDrawer(Player value) {currentDrawer = value;}
+    public void setCurrentWord(String value) {currentWord = value;}
 
     @Override
     public void onEnable() {
@@ -59,17 +65,20 @@ public final class Main extends JavaPlugin {
             System.out.println("Cannot find world by name "+worldname+"! Cancelling startup of plugin.");
             this.setEnabled(false);}
 
-        if (scoreboardManager == null) {
-            System.out.println("Bukkit scoreboard manager failed! Cancelling startup of plugin.");
-            this.setEnabled(false);}
-        scoreboard = scoreboardManager.getNewScoreboard();
+//        if (scoreboardManager == null) {
+//            System.out.println("Bukkit scoreboard manager failed! Cancelling startup of plugin.");
+//            this.setEnabled(false);}
+//        scoreboard = scoreboardManager.getNewScoreboard();
+//        objective = scoreboard.registerNewObjective("skribblPoints","dummy","§l§4Points");
+//        objective.setDisplaySlot(DisplaySlot.SIDEBAR);
+//        team = scoreboard.registerNewTeam("party");
 
         cmds.add("ready");cmds.add("cancel");cmds.add("start");cmds.add("end");cmds.add("kick");cmds.add("ban");cmds.add("unban");cmds.add("join");cmds.add("leave");
-        getServer().getPluginManager().registerEvents(new Events(), this);
+        getServer().getPluginManager().registerEvents(new Events(this), this);
     }
 
     @Override
-    public void onDisable() {Game.mapRemoval();}
+    public void onDisable() {game.mapRemoval();}
 
     @Override
     public boolean onCommand(CommandSender author, Command cmd, String label, String[] args) {
