@@ -1,23 +1,27 @@
 package uk.co.hopperelec.mc.skribbl;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
-//import org.bukkit.scoreboard.*;
+import org.bukkit.scoreboard.*;
 
+import java.io.*;
+import java.nio.file.StandardCopyOption;
 import java.util.*;
 
 public final class Main extends JavaPlugin {
     List<String> cmds = new ArrayList<>();
     SkribblCommands skribblCmds = new SkribblCommands(this);
-//    ScoreboardManager scoreboardManager = Bukkit.getScoreboardManager();
+    ScoreboardManager scoreboardManager;
     final String worldname = "world";
     final String op = "HopperElecYT";
     final String pre = "§4[§cSkribbl§4]§r§7 ";
+    final long roundLength = 200;
     final Random random = new Random();
     public Plugin plugin = null;
     boolean ready = false;
@@ -28,11 +32,13 @@ public final class Main extends JavaPlugin {
     List<Player> bans = new ArrayList<>();
     World world;
     String currentWord = null;
+    List<Integer> currentHint = new ArrayList<>();
+    List<String> wordList = new ArrayList<>();
+    List<String> usedWords = new ArrayList<>();
     List<Player> correctGuessers = new ArrayList<>();
     Map<Player,Integer> points = new HashMap<>();
-//    Scoreboard scoreboard;
-//    Objective objective;
-//    Team team;
+    Scoreboard scoreboard;
+    Objective objective;
 
     public Plugin getPlugin() {return plugin;}
     public boolean getReady() {return ready;}
@@ -41,16 +47,19 @@ public final class Main extends JavaPlugin {
     public Player getCurrentDrawer() {return currentDrawer;}
     public String getOp() {return op;}
     public String getPre() {return pre;}
+    public long getRoundLength() {return roundLength;}
     public List<Player> getParty() {return party;}
     public List<Player> getBans() {return bans;}
     public World getWorld() {return world;}
     public Random getRandom() {return random;}
     public String getCurrentWord() {return currentWord;}
+    public List<Integer> getCurrentHint() {return currentHint;}
+    public List<String> getWordList() {return wordList;}
+    public List<String> getUsedWords() {return usedWords;}
     public List<Player> getCorrectGuessers() {return correctGuessers;}
     public Map<Player,Integer> getPoints() {return points;}
-//    public Scoreboard getScoreboard() {return scoreboard;}
-//    public Objective getObjective() {return objective;}
-//    public Team getTeam() {return team;}
+    public Scoreboard getScoreboard() {return scoreboard;}
+    public Objective getObjective() {return objective;}
 
     public void setReady(boolean value) {ready = value;}
     public void setStarted(boolean value) {started = value;}
@@ -63,22 +72,41 @@ public final class Main extends JavaPlugin {
         world = Bukkit.getWorld(worldname);
         if (world == null) {
             System.out.println("Cannot find world by name "+worldname+"! Cancelling startup of plugin.");
-            this.setEnabled(false);}
+            this.setEnabled(false); return;}
 
-//        if (scoreboardManager == null) {
-//            System.out.println("Bukkit scoreboard manager failed! Cancelling startup of plugin.");
-//            this.setEnabled(false);}
-//        scoreboard = scoreboardManager.getNewScoreboard();
-//        objective = scoreboard.registerNewObjective("skribblPoints","dummy","§l§4Points");
-//        objective.setDisplaySlot(DisplaySlot.SIDEBAR);
-//        team = scoreboard.registerNewTeam("party");
+        scoreboardManager = Bukkit.getScoreboardManager();
+        if (scoreboardManager == null) {
+            System.out.println("Bukkit scoreboard manager failed! Cancelling startup of plugin.");
+            this.setEnabled(false); return;}
+        scoreboard = scoreboardManager.getNewScoreboard();
+        objective = scoreboard.registerNewObjective("skribblPoints","dummy","§l§4Points");
+        objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 
         cmds.add("ready");cmds.add("cancel");cmds.add("start");cmds.add("end");cmds.add("kick");cmds.add("ban");cmds.add("unban");cmds.add("join");cmds.add("leave");
         getServer().getPluginManager().registerEvents(new Events(this), this);
+
+        Bukkit.getScheduler().scheduleSyncDelayedTask(this,() -> {
+            try {
+                if (getDataFolder().mkdir()) {
+                    File output = new File(getDataFolder(),"words.txt");
+                    if (output.createNewFile()) {
+                        InputStream input = getResource("words.txt");
+                        if (input != null) {
+                            java.nio.file.Files.copy(input,output.toPath(),StandardCopyOption.REPLACE_EXISTING);
+                        } else {
+                            System.out.println("Cannot find default (built-in to plugin) words.txt! Cancelling startup of plugin.");
+                            this.setEnabled(false); return;}}}
+                BufferedReader reader = new BufferedReader(new FileReader(getDataFolder()+"\\words.txt"));
+                while (reader.ready()) {wordList.add(reader.readLine());}
+            } catch (IOException e) {e.printStackTrace();}});
     }
 
     @Override
-    public void onDisable() {game.mapRemoval();}
+    public void onDisable() {
+        // game.mapRemoval();
+        for (int x = 4029; x <= 4096; x++) for (int y = 126; y <= 193; y++) for (int z = -33; z <= 34; z++) {
+            world.getBlockAt(x,y,z).setType(Material.AIR);}
+    }
 
     @Override
     public boolean onCommand(CommandSender author, Command cmd, String label, String[] args) {

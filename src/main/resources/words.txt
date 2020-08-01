@@ -1,0 +1,15 @@
+this is
+the
+default
+word list
+that is
+built-in
+to this
+plugin
+for
+Poke Kippster
+and
+will be
+used
+for
+testing

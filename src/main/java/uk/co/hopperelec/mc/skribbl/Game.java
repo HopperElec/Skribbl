@@ -25,27 +25,45 @@ public class Game {
         } else if (main.getCurrentDrawer() == player) {
             nextDrawer();}}
 
+    public void refreshScoreboard() {
+        for (Player player : main.getPoints().keySet()) {
+            main.getObjective().getScore(player.getDisplayName()).setScore(main.getPoints().get(player));}}
+
     public void end(String reason) {
         main.setCurrentDrawer(null);
         main.setStarted(false);
         main.getParty().clear();
         main.setCurrentWord(null);
+        main.getCurrentHint().clear();
         main.getCorrectGuessers().clear();
         main.getPoints().clear();
+        main.getUsedWords().clear();
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.setGameMode(GameMode.SURVIVAL);
             player.teleport(new Location(main.getWorld(),0,main.getWorld().getHighestBlockYAt(0,0)+1,0));
             player.sendMessage(main.getPre()+"The Skribbl game you were playing has now been ended because "+reason+". Apologies!");}
-        mapRemoval();}
+        mapRemoval();
+        refreshScoreboard();}
 
     public void nextDrawer() {
-        // main.getScoreboard(); (Refresh scoreboard with points here)
+        refreshScoreboard();
+
+        if (main.getUsedWords().containsAll(main.getWordList())) {
+            main.getUsedWords().clear();}
+        String chosenWord = null; String randomWord;
+        while (chosenWord == null) {
+            randomWord = main.getWordList().get(main.getRandom().nextInt(main.getWordList().size()));
+            if (!main.getUsedWords().contains(randomWord)) {
+                chosenWord = randomWord;}}
+        main.setCurrentWord(chosenWord);
 
         if (main.getCurrentDrawer() == null) {
             main.setCurrentDrawer(main.getParty().get(main.getRandom().nextInt(main.getParty().size())));
         } else {
+            main.getPoints().put(main.getCurrentDrawer(),main.getPoints().get(main.getCurrentDrawer())+1);
             main.getCorrectGuessers().clear();
-            main.getCurrentDrawer().teleport(new Location(main.getWorld(),4033,161,0));
+            main.getCurrentHint().clear();
+            main.getCurrentDrawer().teleport(new Location(main.getWorld(),4032,161,0));
             main.getCurrentDrawer().setFlying(false);
             int index = main.getParty().indexOf(main.getCurrentDrawer());
             if (index == main.getParty().size()-1) {
@@ -57,11 +75,26 @@ public class Game {
         main.getCurrentDrawer().setFlying(true);
         for (Player player : main.getParty()) {
             player.sendMessage(main.getPre()+main.getCurrentDrawer().getDisplayName()+" is now drawing!");}
-        main.getCurrentDrawer().sendMessage(main.getPre()+"Your word is "+main.getCurrentWord());
+        main.getCurrentDrawer().sendMessage(main.getPre()+"Your word is '"+main.getCurrentWord()+"'");
+
+        for (int x = 1; x <= main.getCurrentWord().length()-1; x++) {
+            Bukkit.getScheduler().scheduleSyncDelayedTask(main.getPlugin(),() -> {
+                int newHint = -1; int temp;
+                while (newHint == -1) {
+                    temp = main.getRandom().nextInt(main.getCurrentWord().length());
+                    if (!main.getCurrentHint().contains(temp)) {newHint = temp;}}
+                main.getCurrentHint().add(newHint);
+                StringBuilder hint = new StringBuilder();
+                for (int y = 0; y <= main.getCurrentWord().length()-1; y++) {
+                    if (!main.getCurrentHint().contains(y)) {hint.append("_");
+                    } else {hint.append(main.getCurrentWord().charAt(y));}}
+                for (Player player : main.getParty()) {
+                    player.sendMessage(main.getPre()+"Hint: '"+hint+"'");}
+            },main.getRoundLength()/main.getCurrentWord().length()*x);}
 
         Bukkit.getScheduler().scheduleSyncDelayedTask(main.getPlugin(),() -> {
             for (Player player : main.getParty()) {
-                player.sendMessage(main.getPre()+main.getCurrentDrawer().getDisplayName()+" ended the round! The word was "+main.getCurrentWord());}
+                player.sendMessage(main.getPre()+main.getCurrentDrawer().getDisplayName()+" ended the round! The word was '"+main.getCurrentWord()+"'!");}
             nextDrawer();
-        },200L);}
+        },main.getRoundLength());}
 }

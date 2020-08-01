@@ -147,8 +147,10 @@ public class SkribblCommands {
                             main.setReady(false);
                             main.setStarted(true);
                             for (Player player : main.getParty()) {
-                                player.teleport(new Location(main.getWorld(),4033,161,0));
-                                player.setGameMode(GameMode.ADVENTURE);}
+                                player.teleport(new Location(main.getWorld(),4032,161,0));
+                                player.setGameMode(GameMode.ADVENTURE);
+                                player.setScoreboard(main.getScoreboard());
+                                main.getPoints().put(player,0);}
                             main.getGame().nextDrawer();
                         } else {author.sendMessage(main.getPre()+"The game is already started!");}
                     } else {author.sendMessage(main.getPre()+"There must be at least 2 people in the party to start a game!");}
