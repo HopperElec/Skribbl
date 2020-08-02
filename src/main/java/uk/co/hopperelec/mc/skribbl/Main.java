@@ -28,11 +28,12 @@ public final class Main extends JavaPlugin {
     boolean started = false;
     Game game = new Game(this);
     Player currentDrawer;
+    Long drawingStartTime;
     List<Player> party = new ArrayList<>();
     List<Player> bans = new ArrayList<>();
     World world;
     String currentWord = null;
-    List<Integer> currentHint = new ArrayList<>();
+    List<Integer> hiddenIndexes = new ArrayList<>();
     List<String> wordList = new ArrayList<>();
     List<String> usedWords = new ArrayList<>();
     List<Player> correctGuessers = new ArrayList<>();
@@ -45,6 +46,7 @@ public final class Main extends JavaPlugin {
     public boolean getStarted() {return started;}
     public Game getGame() {return game;}
     public Player getCurrentDrawer() {return currentDrawer;}
+    public Long getDrawingStartTime() {return drawingStartTime;}
     public String getOp() {return op;}
     public String getPre() {return pre;}
     public long getRoundLength() {return roundLength;}
@@ -53,7 +55,7 @@ public final class Main extends JavaPlugin {
     public World getWorld() {return world;}
     public Random getRandom() {return random;}
     public String getCurrentWord() {return currentWord;}
-    public List<Integer> getCurrentHint() {return currentHint;}
+    public List<Integer> getHiddenIndexes() {return hiddenIndexes;}
     public List<String> getWordList() {return wordList;}
     public List<String> getUsedWords() {return usedWords;}
     public List<Player> getCorrectGuessers() {return correctGuessers;}
@@ -64,6 +66,7 @@ public final class Main extends JavaPlugin {
     public void setReady(boolean value) {ready = value;}
     public void setStarted(boolean value) {started = value;}
     public void setCurrentDrawer(Player value) {currentDrawer = value;}
+    public void setDrawingStartTime(Long value) {drawingStartTime = value;}
     public void setCurrentWord(String value) {currentWord = value;}
 
     @Override
@@ -133,7 +136,7 @@ public final class Main extends JavaPlugin {
                         found = true; break;}}
                 if (found) {
                     return skribblCmds.command((Player) author,args);
-                } else {author.sendMessage("Invalid Skribbl command!"); return false;}}
+                } else {author.sendMessage(pre+"Invalid Skribbl command!"); return false;}}
         } else {return false;}
         return true;
     }

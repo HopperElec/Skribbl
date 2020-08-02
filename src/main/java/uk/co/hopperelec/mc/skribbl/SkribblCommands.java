@@ -115,10 +115,10 @@ public class SkribblCommands {
                         author.sendMessage(main.getPre()+"Done!");});
                     for (Player player : Bukkit.getOnlinePlayers()) {
                         player.setGameMode(GameMode.SPECTATOR);
-                        player.teleport(new Location(main.getWorld(),4064,160,0));
+                        player.teleport(new Location(main.getWorld(),4064,160,0,-90,0));
                         if (main.getBans().contains(player)) {
                             player.sendMessage(main.getPre()+"A Skribbl game is about to start, but you're currently banned from joining Skribbl games!");
-                        } else {
+                        } else if (player != author) {
                             player.sendMessage(main.getPre()+"A Skribbl game is about to start! Use §c/skribbl join §7to join the party ready to start!");}}
                     main.setReady(true);
                     main.getParty().add(author);
@@ -147,7 +147,7 @@ public class SkribblCommands {
                             main.setReady(false);
                             main.setStarted(true);
                             for (Player player : main.getParty()) {
-                                player.teleport(new Location(main.getWorld(),4032,161,0));
+                                player.teleport(new Location(main.getWorld(),4032,161,main.getRandom().nextInt(30)-15,-90,0));
                                 player.setGameMode(GameMode.ADVENTURE);
                                 player.setScoreboard(main.getScoreboard());
                                 main.getPoints().put(player,0);}

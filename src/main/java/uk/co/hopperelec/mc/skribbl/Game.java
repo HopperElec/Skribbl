@@ -31,10 +31,11 @@ public class Game {
 
     public void end(String reason) {
         main.setCurrentDrawer(null);
+        main.setDrawingStartTime(null);
         main.setStarted(false);
         main.getParty().clear();
         main.setCurrentWord(null);
-        main.getCurrentHint().clear();
+        main.getHiddenIndexes().clear();
         main.getCorrectGuessers().clear();
         main.getPoints().clear();
         main.getUsedWords().clear();
@@ -60,10 +61,10 @@ public class Game {
         if (main.getCurrentDrawer() == null) {
             main.setCurrentDrawer(main.getParty().get(main.getRandom().nextInt(main.getParty().size())));
         } else {
-            main.getPoints().put(main.getCurrentDrawer(),main.getPoints().get(main.getCurrentDrawer())+1);
             main.getCorrectGuessers().clear();
-            main.getCurrentHint().clear();
-            main.getCurrentDrawer().teleport(new Location(main.getWorld(),4032,161,0));
+            main.getHiddenIndexes().clear();
+            main.getCurrentDrawer().teleport(new Location(main.getWorld(),4032,161,main.getRandom().nextInt(30)-15,-90,0));
+            main.getCurrentDrawer().setAllowFlight(false);
             main.getCurrentDrawer().setFlying(false);
             int index = main.getParty().indexOf(main.getCurrentDrawer());
             if (index == main.getParty().size()-1) {
@@ -77,24 +78,26 @@ public class Game {
             player.sendMessage(main.getPre()+main.getCurrentDrawer().getDisplayName()+" is now drawing!");}
         main.getCurrentDrawer().sendMessage(main.getPre()+"Your word is '"+main.getCurrentWord()+"'");
 
-        for (int x = 1; x <= main.getCurrentWord().length()-1; x++) {
+        for (int x = 0; x <= main.getCurrentWord().length()-1; x++) {
+            if (Character.isLetter(main.getCurrentWord().charAt(x))) {
+                main.getHiddenIndexes().add(x);}}
+        for (int x = 1; x <= main.getHiddenIndexes().size()-1; x++) {
             Bukkit.getScheduler().scheduleSyncDelayedTask(main.getPlugin(),() -> {
-                int newHint = -1; int temp;
-                while (newHint == -1) {
-                    temp = main.getRandom().nextInt(main.getCurrentWord().length());
-                    if (!main.getCurrentHint().contains(temp)) {newHint = temp;}}
-                main.getCurrentHint().add(newHint);
+                int toShowIndex = main.getRandom().nextInt(main.getHiddenIndexes().size());
+                main.getHiddenIndexes().remove(main.getHiddenIndexes().get(toShowIndex));
                 StringBuilder hint = new StringBuilder();
                 for (int y = 0; y <= main.getCurrentWord().length()-1; y++) {
-                    if (!main.getCurrentHint().contains(y)) {hint.append("_");
+                    if (main.getHiddenIndexes().contains(y)) {hint.append("_");
                     } else {hint.append(main.getCurrentWord().charAt(y));}}
                 for (Player player : main.getParty()) {
                     player.sendMessage(main.getPre()+"Hint: '"+hint+"'");}
-            },main.getRoundLength()/main.getCurrentWord().length()*x);}
+            },main.getRoundLength()/main.getHiddenIndexes().size()*x);}
 
         Bukkit.getScheduler().scheduleSyncDelayedTask(main.getPlugin(),() -> {
             for (Player player : main.getParty()) {
                 player.sendMessage(main.getPre()+main.getCurrentDrawer().getDisplayName()+" ended the round! The word was '"+main.getCurrentWord()+"'!");}
             nextDrawer();
-        },main.getRoundLength());}
+        },main.getRoundLength());
+
+        main.setDrawingStartTime(System.nanoTime());}
 }
